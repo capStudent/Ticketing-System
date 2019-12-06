@@ -17,7 +17,9 @@ int Date::getDay() const {return day;}
 int Date::getYear() const {return year;}
 //Other Functions
 void Date::display(){
-	std::cout << month << "/" << day << "/" << year << std::endl;
+	std::cout << std::setw(2) << std::setfill('0') << month << "/"
+	<< std::setw(2) << std::setfill('0') << day << "/"
+	<< std::setw(2) << std::setfill('0')<< year << std::endl;
 }
 
 //Constructors
@@ -34,7 +36,8 @@ int Time::getHour() const {return hour;}
 int Time::getMin() const {return min;}
 //Other Functions
 void Time::display(){
-	std::cout << hour << ":" << min << std::endl;
+	std::cout << std::setw(2) << std::setfill('0') << hour << ":"
+	<< std::setw(2) << std::setfill('0') << min << std::endl;
 }
 
 //Constructors
