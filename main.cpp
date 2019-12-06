@@ -1,5 +1,7 @@
 #include <iostream>
+#include <iomanip>
 #include "TimeStamp.h"
+#include "Sanitization.h"
 using namespace std;
 
 TimeStamp createTimeStamp(Date tempDate){
@@ -18,57 +20,88 @@ TimeStamp createTimeStamp(Date tempDate){
 void mainMenu(int *option){
 	cout << "\tMain Menu\n";
 	cout << "-------------------------\n";
-	cout << "1: \n";
-	cout << "2: \n";
-	cout << "3: \n";
-	cout << "4: \n";
-	cout << "5: \n";
-	cout << "6: \n";
-	cout << "7: \n";
+	cout << "1: Create Employees\n";
+	cout << "2: Delete Employees\n";
+	cout << "3: View Employees\n";
+	cout << "4: Equipment Drop Off\n";
+	cout << "5: Equipment Repair\n";
+	cout << "6: Equipment Complete\n";
+	cout << "7: Equipment Picked Up\n";
+	cout << "8: Reporting Phase\n";
+	cout << "9: Save and Shut Down\n";
 	cout << "-------------------------\n";
-	cout << "Select an option based on its number.";
-	cin >> *option;
-	intOptionsCheck("Select an option based on its number.", 7, option);
+	intOptionsCheck("Select an option based on its number.", 9, option);
 }
 
 int main(){
+	bool settingDate = true;
 	int month, day, option;
-	monthCheck("Enter month (in number form):", &month);
-	dayCheck("Enter day (the number of the day):", &day);
+	char input;
 	
-	Date runDate(month, day, 19);
+	cout << "Welcome to your ticketing software\n";
+	
+	//check file to decide if the date needs to be set
+	while(settingDate){
+		monthCheck("Enter month (in number form):", &month);
+		dayCheck("Enter day (the number of the day):", &day);
+		Date runDate(month, day, 19);
+		
+		runDate.display();
+		
+		ynCheck("Is that the correct date?(y or n)", &input);
+		
+		if(input == 'y'){
+			settingDate = false;
+		}
+		else if(input == 'n'){
+			cout << "Try again\n";
+		}
+		else{
+			cout << "ERROR.This should never happen\n";
+		}
+	}
 	
 	do
 	{
 		system("CLS");
-		//mainMenu(&option);
+		mainMenu(&option);
 		
 		switch(option)
 		{
-			case 1: //
-				
+			case 1:{
 				break;
-			case 2: //
-				
+			}
+			case 2:{
 				break;
-			case 3: //
-				
+			}
+			case 3:{
 				break;
-			case 4: //
-				
+			}
+			case 4:{
 				break;
-			case 5: //
-				
+			}
+			case 5:{
 				break;
-			case 6: //
-				
+			}
+			case 6:{
 				break;
-			case 7: cout <<"Closing Program...";
-					break;
-			default: cout << "Invalid choice.\n";
-					break;
+			}
+			case 7:{
+				break;
+			}
+			case 8:{
+				break;
+			}
+			case 9:{
+				cout << "Closing Program...\n";
+				break;
+			}
+			default:{
+				cout << "Invalid choice.\n";
+				break;
+			}
 		}
 		system("PAUSE");
-	}while(option != 7);
+	}while(option != 9);
 	return 0;
 }
