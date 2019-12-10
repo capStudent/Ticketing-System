@@ -39,12 +39,11 @@ void mainMenu(int *option){
 	cout << "3: Delete Employees\n";
 	cout << "4: Equipment Drop Off\n";
 	cout << "5: Equipment Repair\n";
-	cout << "6: Equipment Complete\n";
-	cout << "7: Equipment Picked Up\n";
-	cout << "8: Reporting Phase\n";
-	cout << "9: Save and Shut Down\n";
+	cout << "6: Equipment Picked Up\n";
+	cout << "7: Reporting Phase\n";
+	cout << "8: Save and Shut Down\n";
 	cout << "-------------------------\n";
-	intOptionsCheck("Select an option based on its number.", 9, option);
+	intOptionsCheck("Select an option based on its number.", 8, option);
 }
 
 void createEmployees(vector<Employee> *employeesPTR){
@@ -214,22 +213,19 @@ int main(){
 				}
 				break;
 			}
-			case 4:{
+			case 4:{//equipment drop off, create ticket
 				break;
 			}
-			case 5:{
+			case 5:{//equipment repair, work being done, option to finish it
 				break;
 			}
-			case 6:{
+			case 6:{//equipment picked up, moved to record keeping file
 				break;
 			}
-			case 7:{
+			case 7:{//reporting phase, the day progresses forward
 				break;
 			}
 			case 8:{
-				break;
-			}
-			case 9:{
 				ynCheck("Would you like to save your data?(y or n)", &input);
 				
 				if(input == 'y'){
