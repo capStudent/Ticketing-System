@@ -149,7 +149,7 @@ int main(){
 		//read in the data from the other files here
 		
 		cout << "Welcome back to your ticketing software.\n";
-		cout << "Todays date is ";
+		cout << "Today's date is ";
 		currentDate.display();
 		system("PAUSE");
 		system("CLS");
