@@ -2,8 +2,10 @@
 #include <fstream>
 #include <iomanip>
 #include "TimeStamp.h"
-#include "Employee.h"
+#include "Equipment.h"
 #include "Sanitization.h"
+#include "Employee.h"
+
 using namespace std;
 
 TimeStamp createTimeStamp(Date tempDate){
