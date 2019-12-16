@@ -11,6 +11,7 @@ class Employee{
 		std::string firstName;
 		std::string lastName;
 		std::string expertise;
+		double rate;
 	public:
 		//Constructors
 		Employee();
@@ -26,6 +27,7 @@ class Employee{
 		std::string getFirstName() const;
 		std::string getLastName() const;
 		std::string getExpertise() const;
+		double getRate(); 
 		//Other functions
 		void createID(int tempPreviousID);
 		void display();
