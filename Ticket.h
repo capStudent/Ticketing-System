@@ -1,81 +1,96 @@
-//Ticket.h
 #include <iostream>
+#include <vector>
 #include "TimeStamp.h"
 #include "Employee.h"
-
-using namespace std;
 
 #ifndef TICKET_H
 #define TICKET_H
 
 //Has equipment name and owner
 class Equipment{
-	public:
-		Equipment();
-		Equipment(string, string);
-		
-		string getEquipName();
-		string getOwner();
-		
-		void setEquipName(string);
-		void setOwner(string);
 	private:
-		string equipName;
-		string owner;
+		std::string ownerFirstName;
+		std::string ownerLastName;
+		std::string equipmentName;
+	public:
+		//Constructors
+		Equipment();
+		Equipment(std::string tempOwnerFirstName, std::string tempOwnerLastName, std::string tempEquipmentName);
+		//Mutators
+		void setOwnerFirstName(std::string tempOwnerFirstName);
+		void setOwnerLastName(std::string tempOwnerLastName);
+		void setEquipmentName(std::string tempEquipmentName);
+		//Accessors
+		std::string getOwnerFirstName() const;
+		std::string getOwnerLastName() const;
+		std::string getEquipmentName() const;
 };
 
 //Has Employee and hours
 class Repairs{
-	public:
-		Repairs();
-		Repairs(Employee, double);
-		
-		Employee getEmployee();
-		double getHours();
-		
-		void setEmployee(Employee);
-		void setHours(double);
 	private:
-		Employee emp;
+		Employee employee;
 		double hours;
+	public:
+		//Constructors
+		Repairs();
+		Repairs(Employee tempEmployee, double tempHours);
+		//Mutators
+		void setEmployee(Employee tempEmployee);
+		void setHours(double tempHours);
+		//Accessors
+		Employee getEmployee() const;
+		double getHours() const;
 };
 
 //Has Timestamp and string for name
 class Parts{
-	public:
-		Parts();
-		Parts(string, TimeStamp, double);
-		
-		string getPartName();
-		TimeStamp getTimeStamp();
-		double getCost();
-		
-		void setPartName(string);
-		void setTimeStamp(TimeStamp);
-		void setCost(double);
 	private:
-		TimeStamp stamp;
-		string partName;
-		double cost;
+		std::string partName;
+		TimeStamp timeStamp;
+		double partCost;
+	public:
+		//Constructors
+		Parts();
+		Parts(std::string tempPartName, TimeStamp tempTimeStamp, double tempPartCost);
+		//Mutators
+		void setPartName(std::string tempPartName);
+		void setTimeStamp(TimeStamp tempTimeStamp);
+		void setPartCost(double tempPartCost);
+		//Accessors
+		std::string getPartName() const;
+		TimeStamp getTimeStamp() const;
+		double getPartCost() const;
 };
 
 //Status: 1 = Pending, 2 = In Progress, 3 = Complete
 class Ticket{
+	private:
+		Equipment equip;
+		std::vector<Repairs> repairLog;
+		std::vector<Parts> partLog;
+		bool completion;
+		int status;
+		TimeStamp startStamp;
+		TimeStamp endStamp;
+		int partCount;
+		int logCount;
 	public:
+		//Constructors
 		Ticket();
-		Ticket(string, string, TimeStamp);
-		
-		Equipment getEquipment();
-		void getStartStamp();
-		void getEndStamp();
-		void geStatus();
-		bool getCompletion();
-		
-		void setEquipment(string, string);
+		Ticket(std::string tempOwnerFirstName, std::string tempOwnerLastName, std::string tempEquipmentName, TimeStamp tempStamp);
+		//Mutators
+		void setEquipment(std::string tempEquipmentName, std::string tempOwnerFirstName, std::string tempOwnerLastName);
 		void setStatus();
 		void setCompletion(TimeStamp);
-		void addPart(string, TimeStamp, double);
+		void addPart(std::string, TimeStamp, double);
 		void logRepairs(Employee, double);
+		//Accessors
+		Equipment getEquipment() const;
+		void getStartStamp();
+		void getEndStamp();
+		void getStatus();
+		bool getCompletion() const;
 		
 		//Shows List of Parts
 		void showParts();
@@ -83,16 +98,5 @@ class Ticket{
 		void showRepairs();
 		//Calculates current costs
 		void showInvoice();
-	private:
-		Equipment equip;
-		Repairs repairLog[100];
-		Parts partLog[100];
-		
-		bool completion;
-		int status;
-		TimeStamp startStamp;
-		TimeStamp endStamp;
-		int partCount;
-		int logCount;
 };
 #endif
