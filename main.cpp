@@ -383,6 +383,7 @@ int main(){
 	bool creatingEmployees, deletingEmployees;
 	string line;
 	int option, empOption, ticketOption;
+
 	char input;
 	
 	ifstream dateFile("currentdate.txt");

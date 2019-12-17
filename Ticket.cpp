@@ -65,9 +65,11 @@ void Ticket::getEndStamp()
 	else
 		endStamp.display();
 }
+
 int Ticket::getStatus(){return status;}
 
 void Ticket::showStatus()
+
 {
 	switch (status)
 	{
@@ -81,6 +83,7 @@ void Ticket::showStatus()
 				break;
 	}
 }
+
 bool Ticket::getInvoiced() const {return invoiced;}
 
 double Ticket::getHoursWorked()
@@ -94,6 +97,7 @@ double Ticket::getHoursWorked()
 	
 	return labor;
 }
+
 
 //Ticket Mutators
 void Ticket::setEquipment(std::string tempEquipmentName, std::string tempOwnerFirstName, std::string tempOwnerLastName){
