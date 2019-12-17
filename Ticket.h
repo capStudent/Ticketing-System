@@ -69,7 +69,7 @@ class Ticket{
 		Equipment equip;
 		std::vector<Repairs> repairLog;
 		std::vector<Parts> partLog;
-		bool completion;
+		bool invoiced;
 		int status;
 		TimeStamp startStamp;
 		TimeStamp endStamp;
@@ -81,16 +81,18 @@ class Ticket{
 		Ticket(std::string tempOwnerFirstName, std::string tempOwnerLastName, std::string tempEquipmentName, TimeStamp tempStamp);
 		//Mutators
 		void setEquipment(std::string tempEquipmentName, std::string tempOwnerFirstName, std::string tempOwnerLastName);
-		void setStatus();
-		void setCompletion(TimeStamp);
+		void setStatus(TimeStamp);
+		void setInvoiced();
 		void addPart(std::string, TimeStamp, double);
 		void logRepairs(Employee, double);
 		//Accessors
 		Equipment getEquipment() const;
 		void getStartStamp();
 		void getEndStamp();
-		void getStatus();
-		bool getCompletion() const;
+		int getStatus();
+		void showStatus();
+		bool getInvoiced() const;
+		double getHoursWorked();
 		
 		//Shows List of Parts
 		void showParts();
