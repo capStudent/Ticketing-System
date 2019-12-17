@@ -50,7 +50,7 @@ Ticket::Ticket() = default;
 Ticket::Ticket(std::string tempOwnerFirstName, std::string tempOwnerLastName, std::string tempEquipmentName, TimeStamp tempStamp){
 	equip = Equipment(tempOwnerFirstName, tempOwnerLastName, tempEquipmentName);
 	startStamp = tempStamp;
-	completion = false;
+	invoiced = false;
 	status = 1;
 	partCount = 0;
 	logCount = 0;
@@ -65,7 +65,11 @@ void Ticket::getEndStamp()
 	else
 		endStamp.display();
 }
-void Ticket::getStatus()
+
+int Ticket::getStatus(){return status;}
+
+void Ticket::showStatus()
+
 {
 	switch (status)
 	{
@@ -79,13 +83,27 @@ void Ticket::getStatus()
 				break;
 	}
 }
-bool Ticket::getCompletion() const {return completion;}
+
+bool Ticket::getInvoiced() const {return invoiced;}
+
+double Ticket::getHoursWorked()
+{
+	double labor;
+	
+	for(int i = 0; i < logCount; i++)
+	{
+		labor += repairLog[i].getHours();
+	}
+	
+	return labor;
+}
+
 
 //Ticket Mutators
 void Ticket::setEquipment(std::string tempEquipmentName, std::string tempOwnerFirstName, std::string tempOwnerLastName){
 	equip = Equipment(tempOwnerFirstName, tempOwnerLastName, tempEquipmentName);
 }
-void Ticket::setStatus()
+void Ticket::setStatus(TimeStamp tempStamp)
 {
 	std::cout << "Enter a number to set the status of the Ticket.\n"
 		 << "1. Pending\n"
@@ -93,22 +111,30 @@ void Ticket::setStatus()
 		 << "3. Certified Complete\n"
 		 << "Enter Number: ";
 	std::cin >> status;
+	
+	if (status == 3)
+		endStamp = tempStamp;
 }
 //Only called to switch from false completion status to true completion status
-void Ticket::setCompletion(TimeStamp tempStamp)
+void Ticket::setInvoiced()
 {
-	completion = true;
-	endStamp = tempStamp;
+	invoiced = true;
 }
 void Ticket::addPart(std::string tempName, TimeStamp tempStamp, double tempCost)
 {
-	partLog[partCount] = Parts(tempName, tempStamp, tempCost);
+	partLog.push_back(Parts(tempName, tempStamp, tempCost));
 	partCount++;
+	
+	if (status == 1)
+		status = 2;
 }
 void Ticket::logRepairs(Employee tempEmp, double tempHours)
 {
-	repairLog[logCount] = Repairs(tempEmp, tempHours);
+	repairLog.push_back(Repairs(tempEmp, tempHours));
 	logCount++;
+	
+	if (status == 1)
+		status = 2;
 }
 
 //Ticket Other
@@ -135,6 +161,24 @@ void Ticket::showRepairs()
 	}
 }
 
+void Ticket::showSummary()
+{
+	std::cout << "Ticket for " << equip.getEquipmentName() << " Owned by: " << equip.getOwnerFirstName() << " " << equip.getOwnerLastName() << std::endl
+			  << "Start Time\n";
+	startStamp.display();
+	switch (status)
+	{
+		case 1: std::cout <<"Status: Pending\n";
+				break;
+		case 2: std::cout <<"Status: In Progress\n";
+				break;
+		case 3: std::cout <<"Status: Complete\n"
+					 <<"End Time: ";
+				endStamp.display();
+				break;
+	}
+}
+
 void Ticket::showInvoice()
 {
 	double totalCost, partCost, workCost;
@@ -155,25 +199,36 @@ void Ticket::showInvoice()
 	}
 	
 	std::cout <<"Part Log\n";
-	for(int i = 0; i < partCount; i++)
+	std::cout <<"----------------------------\n";
+	if (partCount == 0)
+		std::cout <<"None";
+	else
 	{
-		partCost += partLog[i].getPartCost();
-		std::cout << "Part #"<<i+1<<"\n"
-			 << "Name: "<<partLog[i].getPartName()<<"\n"
-			 << "Time Installed: ";
-		partLog[i].getTimeStamp().display();
-		std::cout << "\n"
-			 << "Cost: "<<partLog[i].getPartCost()<<"\n";
+		for(int i = 0; i < partCount; i++)
+		{
+			partCost += partLog[i].getPartCost();
+			std::cout << "Part #"<<i+1<<"\n"
+				 << "Name: "<<partLog[i].getPartName()<<"\n"
+				 << "Time Installed: ";
+			partLog[i].getTimeStamp().display();
+			std::cout << "\n"
+				 << "Cost: "<<partLog[i].getPartCost()<<"\n";
+		}
 	}
 	
 	std::cout <<"Repair Log\n";
-	for(int i = 0; i < logCount; i++)
+	std::cout <<"----------------------------\n";
+	if (logCount == 0)
+		std::cout <<"None";
+	else
 	{
-		//workCost +=(repairLog[i].getHours() * repairLog[i].getEmployee().getRate());
-		std::cout <<"Repair #"<<i+1<<"\n";
-		repairLog[i].getEmployee().display();
-		std::cout <<"\nHours Worked: "<<repairLog[i].getHours()<<"\n";
-	}
+		for(int i = 0; i < logCount; i++)
+		{
+			//workCost +=(repairLog[i].getHours() * repairLog[i].getEmployee().getRate());
+			std::cout <<"Repair #"<<i+1<<"\n";
+			repairLog[i].getEmployee().display();
+			std::cout <<"\nHours Worked: "<<repairLog[i].getHours()<<"\n";
+		}
 	
 	showParts();
 	showRepairs();
@@ -183,4 +238,5 @@ void Ticket::showInvoice()
 	std::cout << "Cost of Parts: "<<partCost<<"\n"
 		 << "Cost of Labor: "<<workCost<<"\n"
 		 << "Total Cost: "<<totalCost<<"\n";
+	}
 }

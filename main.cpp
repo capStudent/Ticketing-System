@@ -155,11 +155,13 @@ void mainMenu(int *option){
 	cout << "3: Delete Employees\n";
 	cout << "4: Equipment Drop Off\n";
 	cout << "5: Equipment Repair\n";
-	cout << "6: Equipment Picked Up\n";
-	cout << "7: Reporting Phase\n";
-	cout << "8: Save and Shut Down\n";
+	cout << "6. Order Part\n";
+	cout << "7: Equipment Picked Up\n";
+	cout << "8. View Equipment Tickets\n";
+	cout << "9: Reporting Phase\n";
+	cout << "10: Save and Shut Down\n";
 	cout << "-------------------------\n";
-	intOptionsCheck("Select an option based on its number.", 8, option);
+	intOptionsCheck("Select an option based on its number.", 10, option);
 }
 
 void createEmployees(vector<Employee> *employeesPTR){
@@ -205,7 +207,7 @@ void viewEmployees(vector<Employee> tempEmployees){
 void deleteEmployees(vector<Employee> *employeesPTR){
 	int option;
 	viewEmployees(*employeesPTR);
-	intOptionsCheck("Enter the number next to the Client to delete it.", employeesPTR -> size(), &option);
+	intOptionsCheck("Enter the number next to the Employee to delete it.", employeesPTR -> size(), &option);
 	option = option - 1;
 	employeesPTR -> erase(employeesPTR -> begin() + option);
 }
@@ -238,6 +240,141 @@ void equipmentDropOff(vector<Ticket> *ticketPTR, Date currentDate){
 	ticketPTR -> push_back(Ticket(tempCustomerFirstName, tempCustomerLastName, tempEquipmentName, tempTimeStamp));
 }
 
+void viewTickets(vector<Ticket> tempTicket)
+{
+	for(int i = 0;i < tempTicket.size();i++){
+		cout << i + 1 << " - ";
+		tempTicket.at(i).showSummary();
+	}
+}
+
+void logRepairWork(vector<Ticket> *ticketPTR, int ticketOption, Employee tempEmp)
+{
+	double hours;
+	cout << "Enter the hours to be logged on the ticket: ";
+	cin >> hours;
+	
+	ticketPTR -> at(ticketOption).logRepairs(tempEmp, hours);
+	//ticketPTR -> at(ticketOption).logRepairs(tempEmp, hours);
+}
+
+void completeOrder(vector<Ticket> *ticketPTR,int ticketOption, Date currentDate)
+{
+	TimeStamp tempTimeStamp;
+	tempTimeStamp = createTimeStamp(currentDate);
+	
+	ticketPTR -> at(ticketOption).setStatus(tempTimeStamp);
+}
+
+void orderParts(vector<Ticket> *ticketPTR, int ticketOption, Date currentDate)
+{
+	double cost;
+	string name;
+	TimeStamp tempTimeStamp;
+	
+	cout <<"Enter the name of the part: ";
+	cin >> name;
+	cout <<"Enter the cost of the part: ";
+	cin >> cost;
+	tempTimeStamp = createTimeStamp(currentDate);
+	
+	ticketPTR -> at(ticketOption).addPart(name, tempTimeStamp, cost);
+}
+
+int endOfDayMenu()
+{
+	int option, subchoice;
+	cout <<"End of Day Menu\n"
+		 <<"1. Tickets to be Invoiced\n"
+		 <<"2. Incomplete Repairs\n"
+		 <<"3. Flagged Tickets\n"
+		 <<"Enter choice: ";
+	cin >> option;
+	
+	if (option == 1)
+		return option;
+	else if (option == 2)
+	{
+		cout <<"Incomplete Repairs\n"
+			 <<"1. Pending Tickets\n"
+			 <<"2. In Progress Tickets\n"
+			 <<"Enter choice: ";
+		cin >> subchoice;
+		if (subchoice == 1)
+			return 2;
+		else
+			return 3;
+	} else
+	{
+		cout <<"Flagged Tickets\n"
+			 <<"1. Complete Tickets\n"
+			 <<"2. Pending Tickets\n";
+		cin >> subchoice;
+		if (subchoice == 1)
+			return 4;
+		else
+			return 5;
+	}
+}
+
+void endOfDay(vector<Ticket> *ticketPTR)
+{
+	int choice, ticketCount;
+	choice = endOfDayMenu();
+	ticketCount = ticketPTR ->size();
+	
+	switch(choice)
+	{
+		case 1:{//Tickets to be Invoiced
+			for(int i = 0; i < ticketCount; i++)
+			{
+				if (ticketPTR -> at(i).getStatus() == 3 && ticketPTR -> at(i).getInvoiced() == false)
+					ticketPTR -> at(i).showInvoice();
+			}
+			break;
+		}
+		case 2:{//Pending Tickets
+			for(int i = 0; i< ticketCount; i++)
+			{
+				if (ticketPTR -> at(i).getStatus() == 1)
+					ticketPTR -> at(i).showInvoice();
+			}
+			break;
+		}
+		case 3:{//In Progress Tickets
+			for(int i = 0; i< ticketCount; i++)
+			{
+				if (ticketPTR -> at(i).getStatus() == 2)
+					ticketPTR -> at(i).showInvoice();
+			}
+			break;
+		}
+		case 4:{//Completed Flagged Tickets
+			for(int i = 0; i< ticketCount; i++)
+			{
+				if (ticketPTR -> at(i).getStatus() == 3 && ticketPTR -> at(i).getHoursWorked() > 4)
+					ticketPTR -> at(i).showInvoice();
+			}
+			break;
+		}
+		case 5:{//In Progress Flagged Tickets
+		for(int i = 0; i< ticketCount; i++)
+			{
+				if (ticketPTR -> at(i).getStatus() == 2 && ticketPTR -> at(i).getHoursWorked() > 4)
+					ticketPTR -> at(i).showInvoice();
+			}
+			break;
+		}
+	}
+
+	for(int i = 0; i < ticketCount; i++)
+	{
+		if (ticketPTR -> at(i).getStatus() == 3 && ticketPTR -> at(i).getInvoiced() == false)
+			ticketPTR -> at(i).setInvoiced();
+	}
+	
+}
+
 int main(){
 	vector<Employee> employees;
 	vector<Ticket> tickets;
@@ -245,7 +382,8 @@ int main(){
 	Date currentDate;
 	bool creatingEmployees, deletingEmployees;
 	string line;
-	int option;
+	int option, empOption, ticketOption;
+
 	char input;
 	
 	ifstream dateFile("currentdate.txt");
@@ -352,16 +490,65 @@ int main(){
 				}
 				break;
 			}
-			case 5:{//equipment repair, work being done, option to finish it
+			case 5:{//Log Work on Ticket
+				if(employees.size() == 0){
+					cout << "There are no employees to view.\nSelect option 1 to create employees.\n";
+				}
+				else if (tickets.size() == 0)
+					cout << "There are no tickets.\n";
+				else
+				{
+					viewEmployees(employees);
+					intOptionsCheck("Enter a number to log work for that Employee: ", employees.size(), &empOption);
+					empOption = empOption - 1;
+	
+					viewTickets(tickets);
+					intOptionsCheck("Enter a number next to log work for that Ticket: ", tickets.size(), &ticketOption);
+					ticketOption = ticketOption -1;
+					logRepairWork(&tickets, ticketOption, employees.at(empOption));
+				}
 				break;
 			}
-			case 6:{//equipment picked up, moved to record keeping file
+			case 6:{//Ordering a part for a ticket
+				if(employees.size() == 0){
+					cout << "There are no employees to view.\nSelect option 1 to create employees.\n";
+				}
+				else if (tickets.size() == 0)
+					cout << "There are no tickets.\n";
+				else
+				{
+					viewTickets(tickets);
+					intOptionsCheck("Enter a number next to log work for that Ticket: ", tickets.size(), &ticketOption);
+					ticketOption = ticketOption -1;
+					orderParts(&tickets, ticketOption, currentDate);
+				}
 				break;
 			}
-			case 7:{//reporting phase, the day progresses forward
+			case 7:{//equipment picked up, moved to record keeping file
+				if (tickets.size() == 0)
+					cout << "There are no tickets.\n";
+				else
+				{
+					viewTickets(tickets);
+					intOptionsCheck("Enter a number next to log work for that Ticket: ", tickets.size(), &ticketOption);
+					ticketOption = ticketOption -1;
+					completeOrder(&tickets, ticketOption, currentDate);
+				}
 				break;
 			}
-			case 8:{
+			case 8:{//Viewing all Tickets
+				if(tickets.size() == 0)
+					cout << "There are no tickets.\n";
+				else
+					viewTickets(tickets);
+				break;
+			}
+			case 9:{//reporting phase, the day progresses forward
+				endOfDay(&tickets);
+				currentDate.setDay(currentDate.getDay()+1);
+				break;
+			}
+			case 10:{
 				ynCheck("Would you like to save your data?(y or n)", &input);
 				
 				if(input == 'y'){
@@ -392,6 +579,6 @@ int main(){
 			}
 		}
 		system("PAUSE");
-	}while(option != 8);
+	}while(option != 10);
 	return 0;
 }
