@@ -50,27 +50,28 @@ Date readInDate(string line){
 	decryptFileData(&line, 'D');
 	
 	pos = line.find(del);
-	month = stoi(line.substr(0, pos));
+	month = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
 	pos = line.find(del);
-	day = stoi(line.substr(0, pos));
+	day = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
 	pos = line.find(del);
-	year = stoi(line.substr(0, pos));
+	year = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
 	
 	return Date(month, day, year);
 }
 vector<Employee> readInEmployees(string line){
-	string firstName, lastName, expertise, del = ".";
+	vector<Employee> tempEmployees;
+	string Srate, firstName, lastName, expertise, del = ".";
 	size_t pos = 0;
-	double rate;
-	int ID;
+	int ID, rate;
 	
 	decryptFileData(&line, 'E');
 	
 	pos = line.find(del);
-	ID = stoi(line.substr(0, pos));
+	cout << "1\n";
+	ID = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
 	pos = line.find(del);
 	firstName = line.substr(0, pos);
@@ -82,8 +83,13 @@ vector<Employee> readInEmployees(string line){
 	expertise = line.substr(0, pos);
 	line.erase(0, pos + del.length());
 	pos = line.find(del);
-	rate = stoi(line.substr(0, pos));
+	cout << "2\n";
+	rate = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
+	
+	tempEmployees.push_back(Employee(ID, firstName, lastName, expertise, rate));
+	
+	return tempEmployees;
 }
 vector<Ticket> readInTickets(string line){
 	
@@ -383,7 +389,6 @@ int main(){
 	bool creatingEmployees, deletingEmployees;
 	string line;
 	int option, empOption, ticketOption;
-
 	char input;
 	
 	ifstream dateFile("currentdate.txt");
