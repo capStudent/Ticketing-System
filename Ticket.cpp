@@ -55,6 +55,18 @@ Ticket::Ticket(std::string tempOwnerFirstName, std::string tempOwnerLastName, st
 	partCount = 0;
 	logCount = 0;
 }
+Ticket::Ticket(Equipment tempEquipment, std::vector<Repairs> tempRepairLog, std::vector<Parts> tempPartLog, bool tempInvoiced, int tempStatus, TimeStamp tempStartStamp, TimeStamp tempEndStamp, int tempPartCount, int tempLogCount){
+	equip = tempEquipment;
+	repairLog = tempRepairLog;
+	partLog = tempPartLog;
+	invoiced = tempInvoiced;
+	status = tempStatus;
+	startStamp = tempStartStamp;
+	endStamp = tempEndStamp;
+	partCount = tempPartCount;
+	logCount = tempLogCount;
+	
+}
 //Accessors
 Equipment Ticket::getEquipment() const {return equip;}
 std::vector<Repairs> Ticket::getRepairLog() const {return repairLog;}
