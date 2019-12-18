@@ -55,39 +55,30 @@ Ticket::Ticket(std::string tempOwnerFirstName, std::string tempOwnerLastName, st
 	partCount = 0;
 	logCount = 0;
 }
+Ticket::Ticket(Equipment tempEquipment, std::vector<Repairs> tempRepairLog, std::vector<Parts> tempPartLog, bool tempInvoiced, int tempStatus, TimeStamp tempStartStamp, TimeStamp tempEndStamp, int tempPartCount, int tempLogCount){
+	equip = tempEquipment;
+	repairLog = tempRepairLog;
+	partLog = tempPartLog;
+	invoiced = tempInvoiced;
+	status = tempStatus;
+	startStamp = tempStartStamp;
+	endStamp = tempEndStamp;
+	partCount = tempPartCount;
+	logCount = tempLogCount;
+	
+}
 //Accessors
 Equipment Ticket::getEquipment() const {return equip;}
-void Ticket::getStartStamp(){startStamp.display();}
-void Ticket::getEndStamp()
-{
-	if (status != 3)
-		std::cout << "Repairs not complete.\n";
-	else
-		endStamp.display();
-}
-
-int Ticket::getStatus(){return status;}
-
-void Ticket::showStatus()
-
-{
-	switch (status)
-	{
-		case 1: std::cout <<"Status: Pending\n";
-				break;
-		case 2: std::cout <<"Status: In Progress\n";
-				break;
-		case 3: std::cout <<"Status: Complete\n"
-					 <<"Date Completed: ";
-				endStamp.display();
-				break;
-	}
-}
-
+std::vector<Repairs> Ticket::getRepairLog() const {return repairLog;}
+std::vector<Parts> Ticket::getPartLog() const {return partLog;}
 bool Ticket::getInvoiced() const {return invoiced;}
+int Ticket::getStatus() const {return status;}
+TimeStamp Ticket::getStartTimeStamp() const {return startStamp;}
+TimeStamp Ticket::getEndTimeStamp() const {return endStamp;}
+int Ticket::getPartCount() const {return partCount;}
+int Ticket::getLogCount() const {return logCount;}
 
-double Ticket::getHoursWorked()
-{
+double Ticket::getHoursWorked(){
 	double labor;
 	
 	for(int i = 0; i < logCount; i++)
@@ -100,6 +91,19 @@ double Ticket::getHoursWorked()
 
 
 //Ticket Mutators
+void Ticket::showStatus(){
+	switch (status)
+	{
+		case 1: std::cout <<"Status: Pending\n";
+				break;
+		case 2: std::cout <<"Status: In Progress\n";
+				break;
+		case 3: std::cout <<"Status: Complete\n"
+					 <<"Date Completed: ";
+				endStamp.display();
+				break;
+	}
+}
 void Ticket::setEquipment(std::string tempEquipmentName, std::string tempOwnerFirstName, std::string tempOwnerLastName){
 	equip = Equipment(tempOwnerFirstName, tempOwnerLastName, tempEquipmentName);
 }
@@ -138,6 +142,14 @@ void Ticket::logRepairs(Employee tempEmp, double tempHours)
 }
 
 //Ticket Other
+void Ticket::showStartStamp(){startStamp.display();}
+void Ticket::showEndStamp()
+{
+	if (status != 3)
+		std::cout << "Repairs not complete.\n";
+	else
+		endStamp.display();
+}
 void Ticket::showParts()
 {
 	for(int i = 0; i < partCount; i++)

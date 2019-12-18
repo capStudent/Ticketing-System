@@ -79,21 +79,29 @@ class Ticket{
 		//Constructors
 		Ticket();
 		Ticket(std::string tempOwnerFirstName, std::string tempOwnerLastName, std::string tempEquipmentName, TimeStamp tempStamp);
+		Ticket(Equipment tempEquipment, std::vector<Repairs> tempRepairLog, std::vector<Parts> tempPartLog, bool tempInvoiced, int tempStatus, TimeStamp tempStartStamp, TimeStamp tempEndStamp, int tempPartCount, int tempLogCount);
 		//Mutators
 		void setEquipment(std::string tempEquipmentName, std::string tempOwnerFirstName, std::string tempOwnerLastName);
-		void setStatus(TimeStamp);
+		void setStatus(TimeStamp tempStamp);
 		void setInvoiced();
 		void addPart(std::string, TimeStamp, double);
 		void logRepairs(Employee, double);
 		//Accessors
 		Equipment getEquipment() const;
-		void getStartStamp();
-		void getEndStamp();
-		int getStatus();
-		void showStatus();
+		std::vector<Repairs> getRepairLog() const;
+		std::vector<Parts> getPartLog() const;
 		bool getInvoiced() const;
+		int getStatus() const;
+		TimeStamp getStartTimeStamp() const;
+		TimeStamp getEndTimeStamp() const;
+		int getPartCount() const;
+		int getLogCount() const;
+		
 		double getHoursWorked();
 		
+		void showStartStamp();
+		void showEndStamp();
+		void showStatus();
 		//Shows List of Parts
 		void showParts();
 		//Shows list of Repairs

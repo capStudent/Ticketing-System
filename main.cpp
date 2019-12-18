@@ -37,25 +37,21 @@ Date setCurrentDate(){
 	return currentDate;
 }
 
-void decryptFileData(string *linePTR, char key){
-	for(auto i = 0;i < linePTR -> size();i++){
-			linePTR -> at(i) = linePTR -> at(i)^key;
-	}
-}
 Date readInDate(string line){
 	int month, day, year;
 	string del = ".";
 	size_t pos = 0;
 	
-	decryptFileData(&line, 'D');
-	
 	pos = line.find(del);
+	cout << "1a\n";
 	month = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
 	pos = line.find(del);
+	cout << "2a\n";
 	day = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
 	pos = line.find(del);
+	cout << "3a\n";
 	year = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
 	
@@ -63,99 +59,272 @@ Date readInDate(string line){
 }
 vector<Employee> readInEmployees(string line){
 	vector<Employee> tempEmployees;
-	string Srate, firstName, lastName, expertise, del = ".";
+	string firstName, lastName, expertise, del = ".";
 	size_t pos = 0;
-	int ID, rate;
-	
-	decryptFileData(&line, 'E');
+	int size, ID;
 	
 	pos = line.find(del);
-	cout << "1\n";
-	ID = stoi(line.substr(0, pos).c_str());
+	size = stoi(line.substr(0, pos).c_str());
 	line.erase(0, pos + del.length());
-	pos = line.find(del);
-	firstName = line.substr(0, pos);
-	line.erase(0, pos + del.length());
-	pos = line.find(del);
-	lastName = line.substr(0, pos);
-	line.erase(0, pos + del.length());
-	pos = line.find(del);
-	expertise = line.substr(0, pos);
-	line.erase(0, pos + del.length());
-	pos = line.find(del);
-	cout << "2\n";
-	rate = stoi(line.substr(0, pos).c_str());
-	line.erase(0, pos + del.length());
-	
-	tempEmployees.push_back(Employee(ID, firstName, lastName, expertise, rate));
+	for(auto i = 0;i < size;i++){
+		pos = line.find(del);
+		ID = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		firstName = line.substr(0, pos);
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		lastName = line.substr(0, pos);
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		expertise = line.substr(0, pos);
+		line.erase(0, pos + del.length());
+		
+		tempEmployees.push_back(Employee(ID-1, firstName, lastName, expertise));
+	}
 	
 	return tempEmployees;
 }
 vector<Ticket> readInTickets(string line){
+	vector<Ticket> tickets;
+	vector<Repairs> repairLog;
+	vector<Parts> partLog;
+	Employee tempEmployee;
+	Equipment equip;
+	Repairs repair;
+	Parts part;
+	Date tempDate;
+	Time tempTime;
+	size_t pos = 0;
+	bool invoiced;
+	TimeStamp timeStamp;
+	TimeStamp startStamp;
+	TimeStamp endStamp;
+	int size, status, partCount, logCount, ID, hours, month, day, year, hour, min, partCost;
+	string ownerFirstName, ownerLastName, equipmentName, partName, firstName, lastName, expertise, del = ".";
 	
+	pos = line.find(del);
+	size = stoi(line.substr(0, pos).c_str());
+	line.erase(0, pos + del.length());
+	for(auto i = 0;i < size;i++){
+		pos = line.find(del);
+		ownerFirstName = line.substr(0, pos).c_str();
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		ownerLastName = line.substr(0, pos).c_str();
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		equipmentName = line.substr(0, pos).c_str();
+		equip = Equipment(ownerFirstName, ownerLastName, equipmentName);
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		partCount = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		logCount = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		for(auto j = 0;j < logCount;j++){
+			pos = line.find(del);
+			ID = stoi(line.substr(0, pos).c_str());
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			firstName = line.substr(0, pos).c_str();
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			lastName = line.substr(0, pos).c_str();
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			expertise = line.substr(0, pos).c_str();
+			line.erase(0, pos + del.length());
+			tempEmployee = Employee(ID - 1, firstName, lastName, expertise);
+			pos = line.find(del);
+			hours = stoi(line.substr(0, pos).c_str());
+			line.erase(0, pos + del.length());
+			repairLog.push_back(Repairs(tempEmployee, hours));
+		}
+		for(auto j = 0;j < partCount;j++){
+			pos = line.find(del);
+			partName = line.substr(0, pos).c_str();
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			month = stoi(line.substr(0, pos).c_str());
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			day = stoi(line.substr(0, pos).c_str());
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			year = stoi(line.substr(0, pos).c_str());
+			tempDate = Date(month, day, year);
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			hour = stoi(line.substr(0, pos).c_str());
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			min = stoi(line.substr(0, pos).c_str());
+			tempTime = Time(hour, min);
+			timeStamp = TimeStamp(tempDate, tempTime);
+			line.erase(0, pos + del.length());
+			pos = line.find(del);
+			partCost = stoi(line.substr(0, pos).c_str());
+			part = Parts(partName, timeStamp, partCost);
+			line.erase(0, pos + del.length());
+			partLog.push_back(part);
+		}
+		pos = line.find(del);
+		invoiced = bool(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		status = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		month = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		day = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		year = stoi(line.substr(0, pos).c_str());
+		tempDate = Date(month, day, year);
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		hour = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		min = stoi(line.substr(0, pos).c_str());
+		tempTime = Time(hour, min);
+		startStamp = TimeStamp(tempDate, tempTime);
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		month = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		day = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		year = stoi(line.substr(0, pos).c_str());
+		tempDate = Date(month, day, year);
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		hour = stoi(line.substr(0, pos).c_str());
+		line.erase(0, pos + del.length());
+		pos = line.find(del);
+		min = stoi(line.substr(0, pos).c_str());
+		tempTime = Time(hour, min);
+		endStamp = TimeStamp(tempDate, tempTime);
+		line.erase(0, pos + del.length());
+		
+		tickets.push_back(Ticket(equip, repairLog, partLog, invoiced, status, startStamp, endStamp, partCount, logCount));
+	}
+	return tickets;
 }
 
-void encryptFileData(string *linePTR, char key){
-	for(auto i = 0;i < linePTR -> size();i++){
-			linePTR -> at(i) = linePTR -> at(i)^key;
-	}
-}
 void writeOutDate(Date currentDate){
 	string line = "";
 	line += to_string(currentDate.getMonth());
-	line.push_back('.');
+	line += ".";
 	line += to_string(currentDate.getDay());
-	line.push_back('.');
+	line += ".";
 	line += to_string(currentDate.getYear());
-	line.push_back('.');
-	encryptFileData(&line, 'D');
+	line += ".";
 	ofstream dateFile("currentdate.txt", ios::trunc);
 	dateFile << line;
 	dateFile.close();
 }
 void writeOutEmployees(vector<Employee> employees){
 	string line = "";
+	line += to_string(employees.size());
+	line += ".";
 	for(auto i = 0;i < employees.size();i++){
 		line += to_string(employees.at(i).getID());
-		line.push_back('.');
+		line += ".";
 		line += employees.at(i).getFirstName();
-		line.push_back('.');
+		line += ".";
 		line += employees.at(i).getLastName();
-		line.push_back('.');
+		line += ".";
 		line += employees.at(i).getExpertise();
-		line.push_back('.');
-		line += to_string(employees.at(i).getRate());
-		line.push_back('.');
+		line += ".";
 	}
-	encryptFileData(&line, 'E');
 	ofstream employeesFile("employees.txt", ios::trunc);
 	employeesFile << line;
 	employeesFile.close();
 }
 void writeOutTickets(vector<Ticket> tickets){
 	string line = "";
+	line += to_string(tickets.size());
+	line += ".";
 	for(auto i = 0;i < tickets.size();i++){
-		//write all ticket info to a line
+		line += tickets.at(i).getEquipment().getOwnerFirstName();
+		line += ".";
+		line += tickets.at(i).getEquipment().getOwnerLastName();
+		line += ".";
+		line += tickets.at(i).getEquipment().getEquipmentName();
+		line += ".";
+		line += to_string(tickets.at(i).getPartCount());
+		line += ".";
+		line += to_string(tickets.at(i).getLogCount());
+		line += ".";
+		for(auto j = 0;j < tickets.at(i).getRepairLog().size();j++){
+			line += to_string(tickets.at(i).getRepairLog().at(j).getEmployee().getID());
+			line += ".";
+			line += tickets.at(i).getRepairLog().at(j).getEmployee().getFirstName();
+			line += ".";
+			line += tickets.at(i).getRepairLog().at(j).getEmployee().getLastName();
+			line += ".";
+			line += tickets.at(i).getRepairLog().at(j).getEmployee().getExpertise();
+			line += ".";
+			line += to_string(tickets.at(i).getRepairLog().at(j).getHours());
+			line += ".";
+		}
+		for(auto j = 0;j < tickets.at(i).getPartLog().size();j++){
+			line += tickets.at(i).getPartLog().at(j).getPartName();
+			line += ".";
+			line += to_string(tickets.at(i).getPartLog().at(j).getTimeStamp().getDate().getMonth());
+			line += ".";
+			line += to_string(tickets.at(i).getPartLog().at(j).getTimeStamp().getDate().getDay());
+			line += ".";
+			line += to_string(tickets.at(i).getPartLog().at(j).getTimeStamp().getDate().getYear());
+			line += ".";
+			line += to_string(tickets.at(i).getPartLog().at(j).getTimeStamp().getTime().getHour());
+			line += ".";
+			line += to_string(tickets.at(i).getPartLog().at(j).getTimeStamp().getTime().getMin());
+			line += ".";
+			line += to_string(tickets.at(i).getPartLog().at(j).getPartCost());
+			line += ".";
+		}
+		line += to_string(tickets.at(i).getInvoiced());
+		line += ".";
+		line += to_string(tickets.at(i).getStatus());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getDate().getMonth());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getDate().getDay());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getDate().getYear());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getTime().getHour());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getTime().getMin());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getDate().getMonth());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getDate().getDay());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getDate().getYear());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getTime().getHour());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getTime().getMin());
+		line += ".";
 	}
-	encryptFileData(&line, 'T');
 	ofstream ticketsFile("tickets.txt", ios::trunc);
 	ticketsFile << line;
 	ticketsFile.close();
 }
-void writeOutRecords(vector<Ticket> records){
-	string line = "";
-	for(auto i = 0;i < records.size();i++){
-		//write all ticket info to a line
-	}
-	encryptFileData(&line, 'T');
-	ofstream recordsFile("records.txt", ios::trunc);
-	recordsFile << line;
-	recordsFile.close();
-}
 
-void mainMenu(int *option){
-	cout << "\tMain Menu\n";
-	cout << "-------------------------\n";
+void mainMenu(int *option, Date currentDate){
+	cout << "    Main Menu ";
+	currentDate.display();
+	cout << "--------------------------\n";
 	cout << "1: Create Employees\n";
 	cout << "2: View Employees\n";
 	cout << "3: Delete Employees\n";
@@ -166,7 +335,7 @@ void mainMenu(int *option){
 	cout << "8. View Equipment Tickets\n";
 	cout << "9: Reporting Phase\n";
 	cout << "10: Save and Shut Down\n";
-	cout << "-------------------------\n";
+	cout << "--------------------------\n";
 	intOptionsCheck("Select an option based on its number.", 10, option);
 }
 
@@ -213,7 +382,7 @@ void viewEmployees(vector<Employee> tempEmployees){
 void deleteEmployees(vector<Employee> *employeesPTR){
 	int option;
 	viewEmployees(*employeesPTR);
-	intOptionsCheck("Enter the number next to the Employee to delete it.", employeesPTR -> size(), &option);
+	intOptionsCheck("Enter the number next to the Client to delete it.", employeesPTR -> size(), &option);
 	option = option - 1;
 	employeesPTR -> erase(employeesPTR -> begin() + option);
 }
@@ -261,7 +430,6 @@ void logRepairWork(vector<Ticket> *ticketPTR, int ticketOption, Employee tempEmp
 	cin >> hours;
 	
 	ticketPTR -> at(ticketOption).logRepairs(tempEmp, hours);
-	//ticketPTR -> at(ticketOption).logRepairs(tempEmp, hours);
 }
 
 void completeOrder(vector<Ticket> *ticketPTR,int ticketOption, Date currentDate)
@@ -384,11 +552,10 @@ void endOfDay(vector<Ticket> *ticketPTR)
 int main(){
 	vector<Employee> employees;
 	vector<Ticket> tickets;
-	vector<Ticket> records;
 	Date currentDate;
 	bool creatingEmployees, deletingEmployees;
-	string line;
 	int option, empOption, ticketOption;
+	string line;
 	char input;
 	
 	ifstream dateFile("currentdate.txt");
@@ -431,7 +598,7 @@ int main(){
 	do
 	{
 		system("CLS");
-		mainMenu(&option);
+		mainMenu(&option, currentDate);
 		
 		switch(option)
 		{
@@ -560,7 +727,6 @@ int main(){
 					writeOutDate(currentDate);
 					writeOutEmployees(employees);
 					writeOutTickets(tickets);
-					writeOutRecords(records);
 				}
 				else if(input == 'n'){//clears all data so that when the program starts again, its a freash start
 					ofstream dateFile("currentdate.txt", ios::trunc);
@@ -569,8 +735,6 @@ int main(){
 					employeesFile.close();
 					ofstream ticketsFile("tickets.txt", ios::trunc);
 					ticketsFile.close();
-					ofstream recordsFile("records.txt", ios::trunc);
-					recordsFile.close();
 				}
 				else{
 					cout << "ERROR. This shouldn't be possible.\n";
