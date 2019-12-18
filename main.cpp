@@ -124,7 +124,46 @@ void writeOutEmployees(vector<Employee> employees){
 void writeOutTickets(vector<Ticket> tickets){
 	string line = "";
 	for(auto i = 0;i < tickets.size();i++){
-		//write all ticket info to a line
+		line += tickets.at(i).getEquipment().getOwnerFirstName();
+		line += ".";
+		line += tickets.at(i).getEquipment().getOwnerLastName();
+		line += ".";
+		line += tickets.at(i).getEquipment().getEquipmentName();
+		line += ".";
+		for(auto i = 0;i < tickets.at(i).getRepairLog().size();i++){
+			
+		}
+		for(auto i = 0;i < tickets.at(i).getPartLog().size();i++){
+			
+		}
+		line += to_string(tickets.at(i).getInvoiced());
+		line += ".";
+		line += to_string(tickets.at(i).getStatus());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getDate().getMonth());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getDate().getDay());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getDate().getYear());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getTime().getHour());
+		line += ".";
+		line += to_string(tickets.at(i).getStartTimeStamp().getTime().getMin());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getDate().getMonth());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getDate().getDay());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getDate().getYear());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getTime().getHour());
+		line += ".";
+		line += to_string(tickets.at(i).getEndTimeStamp().getTime().getMin());
+		line += ".";
+		line += to_string(tickets.at(i).getPartCount());
+		line += ".";
+		line += to_string(tickets.at(i).getLogCount());
+		line += ".";
 	}
 	ofstream ticketsFile("tickets.txt", ios::trunc);
 	ticketsFile << line;
